@@ -1,49 +1,18 @@
 import React, {Component} from 'react';
 import './App.css';
+import fetchHelper from "./fetchHelpers";
 
 class App extends Component {
-    state = {
-        type: "skema",
-        name: "",
-        schedule: {
-            student: {
-                name: "Asger",
-                studentId: "100"
-            },
-            courses: [
-                {
-                    name: "course1",
-                    date: "18-09-2017",
-                    startTime: "08:30",
-                    endTime: "12:00",
-                    local: "101",
-                    teacher: "LAM"
+    constructor() {
+        super();
+        this.state = {
+            type: "skema",
+            name: "",
+            schedule: {
+                student: {
                 },
-                {
-                    name: "course2",
-                    date: "20-09-2017",
-                    startTime: "08:30",
-                    endTime: "12:00",
-                    local: "101",
-                    teacher: "BORG"
-                },
-                {
-                    name: "course2",
-                    date: "20-09-2017",
-                    startTime: "12:30",
-                    endTime: "16:00",
-                    local: "101",
-                    teacher: "BORG"
-                },
-                {
-                    name: "course1",
-                    date: "21-09-2017",
-                    startTime: "12:30",
-                    endTime: "16:00",
-                    local: "101",
-                    teacher: "LAM"
-                }
-            ]
+                courses: []
+            }
         }
     }
 
@@ -54,19 +23,22 @@ class App extends Component {
     }
 
     searchSchedule() {
-        fetch("")
+        console.log(this.state.schedule);
+        const options = fetchHelper.makeOptions("GET", true);
+        fetch("http://localhost:8084/SkemaBackend/api/skema/" + this.state.name, options)
             .then(res => res.json())
             .then(res => {
+                console.log(res.schedule);
                 this.setState({
-                    schedule: res
-                }, () => console.log())
+                    schedule: res.schedule
+                }, () => console.log(this.state.schedule))
             })
     }
 
     renderCourse(time, date) {
         return this.state.schedule.courses.map((course, index) => {
             if (course != null) {
-                if(course.startTime === time && course.date === date)
+                if (course.startTime === time && course.date === date)
                     return (
                         <div key={index}>
                             <h3>{course.name}</h3>
@@ -95,23 +67,23 @@ class App extends Component {
             <tbody>
             <tr>
                 <th>08:30 - 12:00</th>
-                <th>{this.renderCourse("08:30","18-09-2017")}</th>
-                <th>{this.renderCourse("08:30","19-09-2017")}</th>
-                <th>{this.renderCourse("08:30","20-09-2017")}</th>
-                <th>{this.renderCourse("08:30","21-09-2017")}</th>
-                <th>{this.renderCourse("08:30","22-09-2017")}</th>
-                <th>{this.renderCourse("08:30","23-09-2017")}</th>
-                <th>{this.renderCourse("08:30","24-09-2017")}</th>
+                <th>{this.renderCourse("08:30", "18-09-2017")}</th>
+                <th>{this.renderCourse("08:30", "19-09-2017")}</th>
+                <th>{this.renderCourse("08:30", "20-09-2017")}</th>
+                <th>{this.renderCourse("08:30", "21-09-2017")}</th>
+                <th>{this.renderCourse("08:30", "22-09-2017")}</th>
+                <th>{this.renderCourse("08:30", "23-09-2017")}</th>
+                <th>{this.renderCourse("08:30", "24-09-2017")}</th>
             </tr>
             <tr>
                 <th>12:30 - 16:00</th>
-                <th>{this.renderCourse("12:30","18-09-2017")}</th>
-                <th>{this.renderCourse("12:30","19-09-2017")}</th>
-                <th>{this.renderCourse("12:30","20-09-2017")}</th>
-                <th>{this.renderCourse("12:30","21-09-2017")}</th>
-                <th>{this.renderCourse("12:30","22-09-2017")}</th>
-                <th>{this.renderCourse("12:30","23-09-2017")}</th>
-                <th>{this.renderCourse("12:30","24-09-2017")}</th>
+                <th>{this.renderCourse("12:30", "18-09-2017")}</th>
+                <th>{this.renderCourse("12:30", "19-09-2017")}</th>
+                <th>{this.renderCourse("12:30", "20-09-2017")}</th>
+                <th>{this.renderCourse("12:30", "21-09-2017")}</th>
+                <th>{this.renderCourse("12:30", "22-09-2017")}</th>
+                <th>{this.renderCourse("12:30", "23-09-2017")}</th>
+                <th>{this.renderCourse("12:30", "24-09-2017")}</th>
             </tr>
             </tbody>
         </table>;
@@ -121,7 +93,6 @@ class App extends Component {
     render() {
         return (
             <div className="App">
-                <p>{this.state.name}</p>
                 <form>
                     <input type="text" placeholder="Name" name="name" onChange={this.handleChange.bind(this)}/>
                     <input type="button" name="submit" value="submit" onClick={this.searchSchedule.bind(this)}/>
